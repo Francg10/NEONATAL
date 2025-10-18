@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Checklists Neonatales · SENEO/SEEN</title>
+  <style>
+    :root{--azul:#0B6FB6;--verde:#1FA97A;--gris:#95A5A6;}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f7fafc;color:#1a1a1a;}
+    header{background:var(--azul);color:#fff;padding:16px 20px;}
+    h1{margin:0;font-size:1.25rem}
+    main{max-width:900px;margin:24px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px}
+    .card h3{margin:0 0 8px 0;font-size:1rem;color:#0B6FB6}
+    .btn{display:inline-block;background:var(--verde);color:#fff;text-decoration:none;padding:10px 14px;border-radius:10px;font-weight:600}
+    .note{font-size:.9rem;color:#444;margin-top:8px}
+    .viewer{margin-top:20px;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;height:70vh}
+    iframe{width:100%;height:100%;border:0}
+    footer{color:#555;text-align:center;padding:24px 0}
+    .pill{background:#eaf6f2;color:#0b6f56;border-radius:999px;padding:6px 10px;display:inline-block;font-size:.8rem}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Checklists Neonatales · Prototipo formativo</h1>
+    <div class="pill">Versión 0.1 · solo para docencia</div>
+  </header>
+
+  <main>
+    <p class="note">Elige un recurso. Si abres un PDF, se mostrará abajo. 
+    Recuerda validar siempre con el protocolo vigente de tu centro.</p>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Ingreso térmico RN &lt;= 32 semanas</h3>
+        <!-- Reemplaza el nombre del PDF por el de tu repo -->
+        <a class="btn" href="#" onclick="openPDF('checklist_ingreso_termico_32_semanas.pdf');return false;">Abrir checklist (PDF)</a>
+        <p class="note">Control térmico desde paritorio/UCI. Requiere doble verificación.</p>
+      </div>
+
+      <!-- Puedes duplicar tarjetas para más procedimientos -->
+      <div class="card">
+        <h3>CPAP nasal (borrador)</h3>
+        <a class="btn" href="cpap.html">Abrir flujo (HTML)</a>
+        <p class="note">Flujo guiado básico (prototipo).</p>
+      </div>
+
+      <div class="card">
+        <h3>Analgesia no farmacológica</h3>
+        <a class="btn" href="analgesia.html">Abrir flujo (HTML)</a>
+        <p class="note">KMC, sacarosa, contención. Validar contra protocolo local.</p>
+      </div>
+    </section>
+
+    <!-- Visor embebido -->
+    <div id="pdfViewer" class="viewer" style="display:none">
+      <iframe id="pdfFrame" title="Visor PDF"></iframe>
+    </div>
+  </main>
+
+  <footer>© Unidad Neonatal · Uso docente. Ante dudas, “No lo sé” + consultar protocolo vigente.</footer>
+
+  <script>
+    function openPDF(file){
+      const v=document.getElementById('pdfViewer');
+      const f=document.getElementById('pdfFrame');
+      f.src = file; // Debe existir en el repo
+      v.style.display='block';
+      window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'});
+    }
+  </script>
+</body>
+</html>
