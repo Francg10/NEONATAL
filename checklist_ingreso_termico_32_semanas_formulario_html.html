@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checklist — Ingreso térmico &lt;32 semanas</title>
+  <style>
+    :root{
+      --bg:#0f172a; /* slate-900 */
+      --card:#111827; /* gray-900 */
+      --muted:#94a3b8; /* slate-400 */
+      --text:#e5e7eb; /* gray-200 */
+      --accent:#22d3ee; /* cyan-400 */
+      --ok:#10b981; /* emerald-500 */
+      --warn:#f59e0b; /* amber-500 */
+      --danger:#ef4444; /* red-500 */
+      --surface:#1f2937; /* gray-800 */
+      --ring:#334155; /* slate-700 */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:var(--bg); color:var(--text);
+      font-family: system-ui,-apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.3;
+    }
+    header{
+      padding:16px; position:sticky; top:0; backdrop-filter:saturate(120%) blur(6px);
+      background: linear-gradient(180deg, rgba(15,23,42,0.9), rgba(15,23,42,0.6));
+      border-bottom:1px solid var(--ring);
+      z-index:10;
+    }
+    h1{font-size:1.1rem; margin:0 0 6px 0}
+    .sub{font-size:0.85rem; color:var(--muted)}
+    .legal{font-size:0.8rem; color:var(--warn); font-weight:600}
+
+    .container{max-width:920px; margin:0 auto; padding:16px}
+    .card{background:var(--card); border:1px solid var(--ring); border-radius:14px; padding:14px; box-shadow:0 6px 24px rgba(0,0,0,.25)}
+    .grid{display:grid; gap:12px}
+    @media (min-width:720px){
+      .grid-2{grid-template-columns:1fr 1fr}
+    }
+
+    label{display:block; font-size:0.9rem; margin-bottom:6px; color:#cbd5e1}
+    input[type="text"], input[type="date"], select, textarea{
+      width:100%; background:var(--surface); color:var(--text); border:1px solid var(--ring);
+      border-radius:10px; padding:12px; font-size:1rem; outline:none;
+    }
+    textarea{min-height:96px; resize:vertical}
+
+    .section-title{margin:8px 0 4px; font-weight:700; color:#cbd5e1}
+    .checklist{display:grid; gap:8px}
+    .check-item{display:flex; align-items:flex-start; gap:10px; background:var(--surface); padding:10px; border-radius:10px; border:1px solid var(--ring)}
+    .check-item input{margin-top:3px}
+
+    .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+    button{border:none; border-radius:999px; padding:12px 16px; font-weight:700; cursor:pointer}
+    .primary{background:var(--ok); color:#052e1b}
+    .ghost{background:transparent; color:var(--accent); border:1px solid var(--ring)}
+    .danger{background:var(--danger); color:#fff}
+
+    .table-wrap{margin-top:16px; overflow:auto; border-radius:12px; border:1px solid var(--ring)}
+    table{width:100%; border-collapse:collapse; min-width:800px}
+    th, td{padding:10px 12px; border-bottom:1px solid var(--ring); text-align:left; font-size:0.92rem}
+    th{position:sticky; top:0; background:#0b1224; z-index:1}
+
+    .badge{display:inline-block; padding:2px 8px; border-radius:999px; font-size:0.75rem; border:1px solid var(--ring); color:var(--muted)}
+    footer{color:var(--muted); font-size:0.85rem; padding:16px; text-align:center}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Checklist — Ingreso térmico &lt;32 semanas</h1>
+    <div class="sub">Registro local en su dispositivo · <span class="badge" id="regCount">0 registros</span></div>
+    <div class="legal">Aviso: <strong>Sin datos identificables reales</strong></div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <form id="checkForm" class="grid">
+        <div class="grid grid-2">
+          <div>
+            <label for="fecha">Fecha</label>
+            <input type="date" id="fecha" name="fecha" required />
+          </div>
+          <div>
+            <label for="turno">Turno</label>
+            <select id="turno" name="turno" required>
+              <option value="">Selecciona…</option>
+              <option>Mañana</option>
+              <option>Tarde</option>
+              <option>Noche</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div>
+            <label for="codigo">CódigoRN (texto corto)</label>
+            <input type="text" id="codigo" name="codigo" placeholder="Ej.: RN-123" maxlength="32" />
+          </div>
+          <div>
+            <label for="version">Versión del protocolo</label>
+            <input type="text" id="version" name="version" placeholder="Ej.: v2025.10" />
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title">Ítems del protocolo</div>
+          <div class="checklist" id="checklist">
+            <!-- Items generados por JS para poder mantener un único origen de verdad -->
+          </div>
+        </div>
+
+        <div>
+          <label for="obs">Observaciones</label>
+          <textarea id="obs" name="obs" placeholder="Notas clínicas, incidencias térmicas, acciones correctoras…"></textarea>
+        </div>
+
+        <div class="grid grid-2">
+          <div>
+            <label for="responsable">Responsable</label>
+            <input type="text" id="responsable" name="responsable" placeholder="Iniciales o código profesional" maxlength="32" />
+          </div>
+          <div>
+            <label for="firma">Firma</label>
+            <input type="text" id="firma" name="firma" placeholder="Texto" maxlength="64" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="primary">Guardar registro</button>
+          <button type="button" id="exportBtn" class="ghost">Exportar CSV</button>
+          <button type="button" id="clearBtn" class="danger">Borrar todo</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card table-wrap" aria-label="Registros guardados">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Turno</th>
+            <th>CódigoRN</th>
+            <th>Responsable</th>
+            <th>Firma</th>
+            <th>Versión</th>
+            <th>Ítems OK</th>
+            <th>Observaciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filas generadas dinámicamente -->
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      <p>Datos almacenados en <em>localStorage</em> del navegador. Puede exportar y/o borrar cuando lo desee.</p>
+    </footer>
+  </main>
+
+  <script>
+    // ------- Configuración de ítems del checklist (editar según protocolo local) -------
+    const PROTO_ITEMS = [
+      { id: 'ambiente', label: 'Sala/quirófano ≥ 23 °C alcanzada' },
+      { id: 'precalentado', label: 'Incubadora/Cuna radiante precalentada' },
+      { id: 'bolsa', label: 'Bolsa/envoltura de polietileno aplicada sin secado' },
+      { id: 'gorro', label: 'Gorro colocado precozmente' },
+      { id: 'clampaje', label: 'Cobertura térmica mantenida durante clampaje (si procede)' },
+      { id: 'colchon', label: 'Colchón térmico según criterio y monitorización' },
+      { id: 'gases', label: 'Gases humidificados y calentados (si disponibles)' },
+      { id: 'sensor', label: 'Sensor de Tª cutánea colocado y monitorizando' },
+      { id: 'temp5', label: 'Registro Tª a los 5–10 min' },
+      { id: 'tempingreso', label: 'Tª al ingreso 36,5–37,5 °C' },
+      { id: 'hipotermia', label: 'Si hipotermia: recalentamiento protocolizado iniciado' },
+      { id: 'hipertermia', label: 'Vigilancia/prevención de hipertermia' }
+    ];
+
+    // ------- Utilidades -------
+    const $$ = (sel, ctx=document) => ctx.querySelector(sel);
+    const $all = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+    const STORAGE_KEY = 'ingreso_termico_registros_v1';
+
+    function initChecklist(){
+      const box = $$('#checklist');
+      box.innerHTML = '';
+      PROTO_ITEMS.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'check-item';
+        div.innerHTML = `
+          <input type="checkbox" id="${item.id}" name="items" value="${item.label}">
+          <label for="${item.id}">${item.label}</label>
+        `;
+        box.appendChild(div);
+      });
+    }
+
+    function loadData(){
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch(e){
+        console.error('Error leyendo localStorage', e);
+        return [];
+      }
+    }
+
+    function saveData(arr){
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+        updateCount();
+      } catch(e){
+        alert('No se pudieron guardar los datos en este navegador.');
+      }
+    }
+
+    function updateCount(){
+      const count = loadData().length;
+      $$('#regCount').textContent = `${count} registro${count!==1?'s':''}`;
+    }
+
+    function addRow(tbody, rec){
+      const tr = document.createElement('tr');
+      const itemsOk = rec.items.filter(Boolean).length;
+      const itemsList = rec.items.join('; ');
+      tr.innerHTML = `
+        <td>${rec.fecha || ''}</td>
+        <td>${rec.turno || ''}</td>
+        <td>${escapeHtml(rec.codigo || '')}</td>
+        <td>${escapeHtml(rec.responsable || '')}</td>
+        <td>${escapeHtml(rec.firma || '')}</td>
+        <td>${escapeHtml(rec.version || '')}</td>
+        <td title="${escapeHtml(itemsList)}">${itemsOk}/${PROTO_ITEMS.length}</td>
+        <td>${escapeHtml(rec.obs || '')}</td>
+      `;
+      tbody.prepend(tr);
+    }
+
+    function renderTable(){
+      const data = loadData();
+      const tbody = $$('#dataTable tbody');
+      tbody.innerHTML = '';
+      data.slice().reverse().forEach(rec => addRow(tbody, rec));
+    }
+
+    function escapeHtml(str){
+      return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+    }
+
+    function formToRecord(form){
+      const itemsChecked = $all('input[name="items"]:checked').map(x => x.value);
+      return {
+        fecha: form.fecha.value,
+        turno: form.turno.value,
+        codigo: form.codigo.value.trim(),
+        version: form.version.value.trim(),
+        obs: form.obs.value.trim(),
+        responsable: form.responsable.value.trim(),
+        firma: form.firma.value.trim(),
+        items: itemsChecked,
+        _createdAt: new Date().toISOString()
+      };
+    }
+
+    function validate(rec){
+      if(!rec.fecha){ alert('Seleccione la fecha.'); return false; }
+      if(!rec.turno){ alert('Seleccione el turno.'); return false; }
+      return true;
+    }
+
+    function toCSV(){
+      const data = loadData();
+      if(!data.length){ alert('No hay registros.'); return; }
+      const headers = [
+        'fecha','turno','codigo','responsable','firma','version','items_ok','items_lista','observaciones','created_at'
+      ];
+      const rows = data.map(r => [
+        r.fecha,
+        r.turno,
+        r.codigo,
+        r.responsable,
+        r.firma,
+        r.version,
+        `${r.items.length}/${PROTO_ITEMS.length}`,
+        r.items.join(' | '),
+        r.obs?.replaceAll('\n',' / '),
+        r._createdAt
+      ]);
+      const csv = [headers, ...rows]
+        .map(cols => cols.map(c => `"${String(c??'').replaceAll('"','""')}"`).join(','))
+        .join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const stamp = new Date().toISOString().replaceAll(':','').replaceAll('-','').slice(0,15);
+      a.href = url; a.download = `checklist_ingreso_termico_${stamp}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
+    function clearAll(){
+      if(confirm('Esto borrará todos los registros guardados en este dispositivo. ¿Continuar?')){
+        localStorage.removeItem(STORAGE_KEY);
+        renderTable(); updateCount();
+      }
+    }
+
+    // ------- Inicialización -------
+    window.addEventListener('DOMContentLoaded', () => {
+      initChecklist();
+      renderTable();
+      updateCount();
+
+      // Prefijar fecha de hoy
+      const d = new Date();
+      const iso = new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+      $$('#fecha').value = iso;
+
+      $$('#checkForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const rec = formToRecord(e.target);
+        if(!validate(rec)) return;
+        const data = loadData();
+        data.push(rec);
+        saveData(data);
+        e.target.reset();
+        // Reponer fecha y reconstruir checklist (porque reset lo limpia)
+        $$('#fecha').value = iso;
+        initChecklist();
+        renderTable();
+      });
+
+      $$('#exportBtn').addEventListener('click', toCSV);
+      $$('#clearBtn').addEventListener('click', clearAll);
+    });
+  </script>
+</body>
+</html>
